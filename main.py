@@ -107,7 +107,6 @@ ax.legend()
 ax.grid(True)
 plt.tight_layout()
 
-# Set dates ticks to display every month
 locator = mdates.MonthLocator(interval=6)
 ax.xaxis.set_major_locator(locator)
 # Style dates
@@ -202,6 +201,7 @@ plt.savefig('plots/stock_price.png', dpi=200, bbox_inches='tight')
 
 plt.show()
 #%%
+# MACD Plot 1
 start_date_plot1 = pd.to_datetime('2022-07-01')
 end_date_plot1 = pd.to_datetime('2023-03-01')
 
@@ -237,7 +237,7 @@ plt.xticks(rotation=-45, ha='left')
 plt.savefig('plots/macd_signal_transaction1.png', dpi=200, bbox_inches='tight')
 plt.show()
 #%%
-# --- Second Plot: Illustrating Another Transaction ---
+# MACD Plot 2
 start_date_plot2 = pd.to_datetime('2023-09-01')
 end_date_plot2 = pd.to_datetime('2024-05-01')
 
@@ -275,8 +275,7 @@ plt.show()
 #%% md
 # ## Corresponding Plots for Stock Prices with Transactions
 #%%
-
-# First Transaction on Price Chart
+# Stock Price Plot 1
 fig3, ax3 = plt.subplots(figsize=(15, 7))
 ax3.plot(stock_data_plot1['Date'], stock_data_plot1['Price'], label='Stock Price', color='blue')
 ax3.scatter(buy_points_plot1['Date'], stock_data_plot1[stock_data_plot1['Date'].isin(buy_points_plot1['Date'])]['Price'],
@@ -313,7 +312,7 @@ plt.tight_layout()
 plt.savefig('plots/stock_price_transaction1.png', dpi=200, bbox_inches='tight')
 plt.show()
 #%%
-# Second Transaction on Price Chart
+# Stock Price Plot 2
 fig4, ax4 = plt.subplots(figsize=(15, 7))
 ax4.plot(stock_data_plot2['Date'], stock_data_plot2['Price'], label='Stock Price', color='blue')
 ax4.scatter(buy_points_plot2['Date'], stock_data_plot2[stock_data_plot2['Date'].isin(buy_points_plot2['Date'])]['Price'],
@@ -333,7 +332,6 @@ for date in sell_points_plot2['Date']:
         continue
     ax4.axvline(date, color='red', linestyle='--', linewidth=0.8, label='Sell' if date == sell_points_plot2['Date'].iloc[0] else "")
 
-# Ensure legend includes the vertical lines (only add labels once)
 handles4, labels4 = ax4.get_legend_handles_labels()
 by_label4 = dict(zip(labels4, handles4))
 ax4.legend(by_label4.values(), by_label4.keys())
@@ -350,7 +348,7 @@ plt.tight_layout()
 plt.savefig('plots/stock_price_transaction2.png', dpi=200, bbox_inches='tight')
 plt.show()
 #%%
-# Initialize variables
+# Portfolio simulation
 capital = 1000
 shares = 0
 portfolio_value = [capital]
@@ -391,10 +389,8 @@ if shares > 0:
     capital += shares * last_price
     portfolio_value.append(capital)
 
-# Calculate final portfolio value
 final_portfolio_value = capital
 
-# Generate the plot of portfolio value
 plt.figure(figsize=(15, 7))
 plt.plot(portfolio_value, label='Portfolio Value', color='blue')
 plt.xlabel('Transaction Number')
