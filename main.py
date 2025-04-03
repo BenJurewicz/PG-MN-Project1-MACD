@@ -115,8 +115,18 @@ formatter = mdates.DateFormatter('%Y-%m-%d')
 ax.xaxis.set_major_formatter(formatter)
 # Rotate dates
 plt.xticks(rotation=-45, ha='left')
+first_date = stock_data['Date'].iloc[0]
+last_date = stock_data['Date'].iloc[-1]
+ax.set_xlim(first_date, last_date)
+
+first_date_num = mdates.date2num(first_date)
+last_date_num = mdates.date2num(last_date)
+current_ticks = ax.get_xticks()
+new_ticks = sorted(list(set(list(current_ticks) + [first_date_num, last_date_num])))
+ax.set_xticks(new_ticks)
 
 plt.savefig('plots/macd_signal_cross_points.png',dpi=200, bbox_inches='tight')
+
 plt.show()
 #%%
 # Stock Price with Buy and Sell Signals
@@ -145,6 +155,16 @@ ax.xaxis.set_major_formatter(formatter)
 plt.xticks(rotation=-45, ha='left')
 plt.tight_layout()
 
+first_date = stock_data['Date'].iloc[0]
+last_date = stock_data['Date'].iloc[-1]
+ax.set_xlim(first_date, last_date)
+
+first_date_num = mdates.date2num(first_date)
+last_date_num = mdates.date2num(last_date)
+current_ticks = ax.get_xticks()
+new_ticks = sorted(list(set(list(current_ticks) + [first_date_num, last_date_num])))
+ax.set_xticks(new_ticks)
+
 plt.savefig('plots/stock_price_with_signals.png', dpi=200, bbox_inches='tight')
 
 plt.show()
@@ -164,9 +184,168 @@ locator = mdates.MonthLocator(interval=6)
 ax.xaxis.set_major_locator(locator)
 formatter = mdates.DateFormatter('%Y-%m-%d')
 ax.xaxis.set_major_formatter(formatter)
+
 plt.xticks(rotation=-45, ha='left')
 plt.tight_layout()
 
+first_date = stock_data['Date'].iloc[0]
+last_date = stock_data['Date'].iloc[-1]
+ax.set_xlim(first_date, last_date)
+
+first_date_num = mdates.date2num(first_date)
+last_date_num = mdates.date2num(last_date)
+current_ticks = ax.get_xticks()
+new_ticks = sorted(list(set(list(current_ticks) + [first_date_num, last_date_num])))
+ax.set_xticks(new_ticks)
+
 plt.savefig('plots/stock_price.png', dpi=200, bbox_inches='tight')
 
+plt.show()
+#%%
+start_date_plot1 = pd.to_datetime('2022-07-01')
+end_date_plot1 = pd.to_datetime('2023-03-01')
+
+ms_plot1 = MS[(MS['Date'] >= start_date_plot1) & (MS['Date'] <= end_date_plot1)].copy()
+stock_data_plot1 = stock_data[(stock_data['Date'] >= start_date_plot1) & (stock_data['Date'] <= end_date_plot1)].copy()
+cross_points_plot1 = cross_points[(cross_points['Date'] >= start_date_plot1) & (cross_points['Date'] <= end_date_plot1)].copy()
+
+fig1, ax1 = plt.subplots(figsize=(15, 7))
+ax1.plot(ms_plot1['Date'], ms_plot1.iloc[:, 1], label='MACD')
+ax1.plot(ms_plot1['Date'], ms_plot1['Signal'], label='Signal')
+
+buy_points_plot1 = cross_points_plot1[cross_points_plot1['Cross Point'] == 'Buy']
+ax1.scatter(buy_points_plot1['Date'], ms_plot1[ms_plot1['Date'].isin(buy_points_plot1['Date'])].iloc[:, 1],
+            marker='^', color='green', s=40, label='Buy', zorder=2)
+
+sell_points_plot1 = cross_points_plot1[cross_points_plot1['Cross Point'] == 'Sell']
+ax1.scatter(sell_points_plot1['Date'], ms_plot1[ms_plot1['Date'].isin(sell_points_plot1['Date'])].iloc[:, 1],
+            marker='v', color='red', s=40, label='Sell', zorder=2)
+
+ax1.set_xlabel('Date')
+ax1.set_ylabel('MACD / Signal Value')
+ax1.set_title('MACD and Signal Lines with Cross Points (2022.07.01 - 2023.03.01)')
+ax1.legend()
+ax1.grid(True)
+plt.tight_layout()
+
+locator1 = mdates.MonthLocator(interval=2)
+ax1.xaxis.set_major_locator(locator1)
+formatter1 = mdates.DateFormatter('%Y-%m-%d')
+ax1.xaxis.set_major_formatter(formatter1)
+plt.xticks(rotation=-45, ha='left')
+
+plt.savefig('plots/macd_signal_transaction1.png', dpi=200, bbox_inches='tight')
+plt.show()
+#%%
+# --- Second Plot: Illustrating Another Transaction ---
+start_date_plot2 = pd.to_datetime('2023-09-01')
+end_date_plot2 = pd.to_datetime('2024-05-01')
+
+ms_plot2 = MS[(MS['Date'] >= start_date_plot2) & (MS['Date'] <= end_date_plot2)].copy()
+stock_data_plot2 = stock_data[(stock_data['Date'] >= start_date_plot2) & (stock_data['Date'] <= end_date_plot2)].copy()
+cross_points_plot2 = cross_points[(cross_points['Date'] >= start_date_plot2) & (cross_points['Date'] <= end_date_plot2)].copy()
+
+fig2, ax2 = plt.subplots(figsize=(15, 7))
+ax2.plot(ms_plot2['Date'], ms_plot2.iloc[:, 1], label='MACD')
+ax2.plot(ms_plot2['Date'], ms_plot2['Signal'], label='Signal')
+
+buy_points_plot2 = cross_points_plot2[cross_points_plot2['Cross Point'] == 'Buy']
+ax2.scatter(buy_points_plot2['Date'], ms_plot2[ms_plot2['Date'].isin(buy_points_plot2['Date'])].iloc[:, 1],
+            marker='^', color='green', s=40, label='Buy', zorder=2)
+
+sell_points_plot2 = cross_points_plot2[cross_points_plot2['Cross Point'] == 'Sell']
+ax2.scatter(sell_points_plot2['Date'], ms_plot2[ms_plot2['Date'].isin(sell_points_plot2['Date'])].iloc[:, 1],
+            marker='v', color='red', s=40, label='Sell', zorder=2)
+
+ax2.set_xlabel('Date')
+ax2.set_ylabel('MACD / Signal Value')
+ax2.set_title('MACD and Signal Lines with Cross Points (2022.09.01 - 2023.05.01)')
+ax2.legend()
+ax2.grid(True)
+plt.tight_layout()
+
+locator2 = mdates.MonthLocator(interval=2)
+ax2.xaxis.set_major_locator(locator2)
+formatter2 = mdates.DateFormatter('%Y-%m-%d')
+ax2.xaxis.set_major_formatter(formatter2)
+plt.xticks(rotation=-45, ha='left')
+
+plt.savefig('plots/macd_signal_transaction2.png', dpi=200, bbox_inches='tight')
+plt.show()
+#%% md
+# ## Corresponding Plots for Stock Prices with Transactions
+#%%
+
+# First Transaction on Price Chart
+fig3, ax3 = plt.subplots(figsize=(15, 7))
+ax3.plot(stock_data_plot1['Date'], stock_data_plot1['Price'], label='Stock Price', color='blue')
+ax3.scatter(buy_points_plot1['Date'], stock_data_plot1[stock_data_plot1['Date'].isin(buy_points_plot1['Date'])]['Price'],
+            marker='^', color='green', s=40, label='Buy Signal', zorder=2)
+ax3.scatter(sell_points_plot1['Date'], stock_data_plot1[stock_data_plot1['Date'].isin(sell_points_plot1['Date'])]['Price'],
+            marker='v', color='red', s=40, label='Sell Signal', zorder=2)
+
+# Add vertical line for buy point
+for date in buy_points_plot1['Date']:
+    if not date == pd.Timestamp('2022-10-26 00:00:00'):
+        continue
+    ax3.axvline(date, color='green', linestyle='--', label='Buy' if date == buy_points_plot1['Date'].iloc[0] else "")
+
+# Add vertical lines for sell point
+for date in sell_points_plot1['Date']:
+    if not date == pd.Timestamp('2022-11-29 00:00:00'):
+        continue
+    ax3.axvline(date, color='red', linestyle='--', label='Sell' if date == sell_points_plot1['Date'].iloc[0] else "")
+
+# Add legend for vertical lines
+handles, labels = ax3.get_legend_handles_labels()
+by_label = dict(zip(labels, handles))
+ax3.legend(by_label.values(), by_label.keys())
+
+ax3.set_xlabel('Date')
+ax3.set_ylabel('Price')
+ax3.set_title('Stock Price with Buy and Sell Signals (2022.07.01 - 2023.03.01)')
+ax3.legend()
+ax3.grid(True)
+ax3.xaxis.set_major_locator(locator1)
+ax3.xaxis.set_major_formatter(formatter1)
+plt.xticks(rotation=-45, ha='left')
+plt.tight_layout()
+plt.savefig('plots/stock_price_transaction1.png', dpi=200, bbox_inches='tight')
+plt.show()
+#%%
+# Second Transaction on Price Chart
+fig4, ax4 = plt.subplots(figsize=(15, 7))
+ax4.plot(stock_data_plot2['Date'], stock_data_plot2['Price'], label='Stock Price', color='blue')
+ax4.scatter(buy_points_plot2['Date'], stock_data_plot2[stock_data_plot2['Date'].isin(buy_points_plot2['Date'])]['Price'],
+            marker='^', color='green', s=40, label='Buy Signal', zorder=2)
+ax4.scatter(sell_points_plot2['Date'], stock_data_plot2[stock_data_plot2['Date'].isin(sell_points_plot2['Date'])]['Price'],
+            marker='v', color='red', s=40, label='Sell Signal', zorder=2)
+
+# Add vertical lines for buy points
+for date in buy_points_plot2['Date']:
+    if not date == pd.Timestamp('2023-09-25 00:00:00'):
+        continue
+    ax4.axvline(date, color='green', linestyle='--', linewidth=0.8, label='Buy' if date == buy_points_plot2['Date'].iloc[0] else "")
+
+# Add vertical lines for sell points
+for date in sell_points_plot2['Date']:
+    if not date == pd.Timestamp('2023-09-28 00:00:00'):
+        continue
+    ax4.axvline(date, color='red', linestyle='--', linewidth=0.8, label='Sell' if date == sell_points_plot2['Date'].iloc[0] else "")
+
+# Ensure legend includes the vertical lines (only add labels once)
+handles4, labels4 = ax4.get_legend_handles_labels()
+by_label4 = dict(zip(labels4, handles4))
+ax4.legend(by_label4.values(), by_label4.keys())
+
+ax4.set_xlabel('Date')
+ax4.set_ylabel('Price')
+ax4.set_title('Stock Price with Buy and Sell Signals (2022.09.01 - 2023.05.01)')
+ax4.legend()
+ax4.grid(True)
+ax4.xaxis.set_major_locator(locator2)
+ax4.xaxis.set_major_formatter(formatter2)
+plt.xticks(rotation=-45, ha='left')
+plt.tight_layout()
+plt.savefig('plots/stock_price_transaction2.png', dpi=200, bbox_inches='tight')
 plt.show()
