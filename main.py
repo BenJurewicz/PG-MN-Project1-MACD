@@ -349,3 +349,64 @@ plt.xticks(rotation=-45, ha='left')
 plt.tight_layout()
 plt.savefig('plots/stock_price_transaction2.png', dpi=200, bbox_inches='tight')
 plt.show()
+#%%
+# Initialize variables
+capital = 1000
+shares = 0
+portfolio_value = [capital]
+trade_count = 0
+profit_trades = 0
+loss_trades = 0
+last_buy_price = 0
+
+for index, row in cross_points.iterrows():
+    date = row['Date']
+    signal = row['Cross Point']
+    price = row['Price']
+
+    if signal == 'Buy':
+        if capital > 0:
+            shares_to_buy = capital // price
+            if shares_to_buy > 0:
+                shares += shares_to_buy
+                capital -= shares_to_buy * price
+                last_buy_price = price
+                trade_count += 1
+                portfolio_value.append(capital + shares * price)
+
+    elif signal == 'Sell':
+        if shares > 0:
+            capital += shares * price
+            shares = 0
+            trade_count += 1
+            portfolio_value.append(capital)
+            if price > last_buy_price:
+                profit_trades += 1
+            else:
+                loss_trades += 1
+
+# Sell remaining shares
+if shares > 0:
+    last_price = stock_data.iloc[-1]['Price']
+    capital += shares * last_price
+    portfolio_value.append(capital)
+
+# Calculate final portfolio value
+final_portfolio_value = capital
+
+# Generate the plot of portfolio value
+plt.figure(figsize=(15, 7))
+plt.plot(portfolio_value, label='Portfolio Value', color='blue')
+plt.xlabel('Transaction Number')
+plt.ylabel('Portfolio Value')
+plt.title('Portfolio Value Over Transactions')
+plt.legend()
+plt.grid(True)
+plt.savefig('plots/portfolio_value.png', dpi=200, bbox_inches='tight')
+plt.show()
+
+# Print results
+print(f"Final Portfolio Value: {round(final_portfolio_value, 2)}")
+print(f"Profitable Trades: {profit_trades}")
+print(f"Lossing Trades: {loss_trades}")
+print(f"Total Trades: {trade_count}")
